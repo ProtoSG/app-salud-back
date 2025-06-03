@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: app-salud-db 
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "app_salud"
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: go-air
+    container_name: app-salud-api
+    ports:
+      - 8080:8080
+    depends_on:
+      - db 
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/app_salud?sslmode=disable
+      - PORT=8080
+      - TOKEN_SECRET=secreto
+    volumes:
+      - ./:/app
+      - /app/tmp
+    working_dir: /app
+
+volumes:
+  pgdata:

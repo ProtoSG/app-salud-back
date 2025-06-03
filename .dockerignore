@@ -1,0 +1,8 @@
+# .dockerignore
+bin/
+rest/
+
+.git
+.gitignore
+
+tmp/
