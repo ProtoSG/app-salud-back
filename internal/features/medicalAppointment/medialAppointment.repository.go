@@ -29,9 +29,7 @@ func (this *postgreRepo) ReadAppointmentsToday(doctor_id int) ([]*MedicalAppoint
 		FROM medical_appointment ma 
 		INNER JOIN patient p ON p.patient_id = ma.patient_id
 		WHERE ma.doctor_id = $1
-		AND ma.appointment_time 
-		BETWEEN CURRENT_DATE 
-		AND CURRENT_DATE + INTERVAL '1 day' - INTERVAL '1 second'
+  	AND (ma.appointment_time AT TIME ZONE 'America/Lima')::date = CURRENT_DATE
 		ORDER BY appointment_time ASC;
 	`
 	appointments := []*MedicalAppointmentByDoctor{}
