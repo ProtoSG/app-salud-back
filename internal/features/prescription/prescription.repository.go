@@ -4,10 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"time"
 )
 
 type Repository interface {
 	Create(pres *Prescription) (int64, error)
+	Read() ([]*PrescriptionBase, error)
 }
 
 type postgreRepo struct {
@@ -84,4 +86,78 @@ func (this *postgreRepo) Create(pres *Prescription) (int64, error) {
 	}
 
 	return prescriptionID, nil
+}
+
+func (r *postgreRepo) Read() ([]*PrescriptionBase, error) {
+	ctx := context.Background()
+
+	query := `
+    SELECT
+      p.prescription_id,
+      (pt.first_name || ' ' || pt.last_name) AS patient_name,
+      pt.dni AS patient_dni,
+      p.issued_at,
+      i.item_id,
+      i.medication,
+      i.dosage,
+      i.duration_days,
+      i.administration_route
+    FROM prescription p
+    JOIN patient pt
+      ON pt.patient_id = p.patient_id
+    JOIN prescription_item i
+      ON i.prescription_id = p.prescription_id
+    ORDER BY p.prescription_id, i.item_id;
+    `
+
+	rows, err := r.db.QueryContext(ctx, query)
+	if err != nil {
+		return nil, fmt.Errorf("error al ejecutar consulta: %w", err)
+	}
+	defer rows.Close()
+
+	var results []*PrescriptionBase
+	var current *PrescriptionBase
+	var lastID int
+
+	for rows.Next() {
+		var presID int
+		var patientName, patientDNI string
+		var issuedAt time.Time
+		var item PrescriptionItemBase
+
+		if err := rows.Scan(
+			&presID,
+			&patientName,
+			&patientDNI,
+			&issuedAt,
+			&item.ItemID,
+			&item.Medication,
+			&item.Dosage,
+			&item.DurationDays,
+			&item.AdministrationRoute,
+		); err != nil {
+			return nil, fmt.Errorf("error al hacer Scan de filas: %w", err)
+		}
+
+		if current == nil || presID != lastID {
+			current = &PrescriptionBase{
+				PrescriptionID: presID,
+				PatientName:    patientName,
+				PatientDNI:     patientDNI,
+				IssuedAt:       issuedAt,
+				Items:          []PrescriptionItemBase{},
+			}
+			results = append(results, current)
+			lastID = presID
+		}
+
+		current.Items = append(current.Items, item)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error en la iteración de filas: %w", err)
+	}
+
+	return results, nil
 }

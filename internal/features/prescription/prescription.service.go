@@ -18,3 +18,7 @@ func (this *Service) Create(pres *Prescription) (int64, error) {
 
 	return newID, nil
 }
+
+func (this *Service) Read() ([]*PrescriptionBase, error) {
+	return this.repo.Read()
+}
