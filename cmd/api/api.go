@@ -33,9 +33,31 @@ func (this *APIServer) Run() error {
 	apiRouter := r.PathPrefix("/api").Subrouter()
 	router.NewRouterContainer(apiRouter, serviceContainer)
 
+	corsmiddleware := handlers.CORS(
+		handlers.AllowedOrigins([]string{"http://localhost:5173"}),
+		handlers.AllowedMethods([]string{
+			"get",
+			"post",
+			"put",
+			"delete",
+			"options",
+		}),
+
+		handlers.AllowedHeaders([]string{
+			"content-type",
+			"authorization",
+		}),
+
+		handlers.ExposedHeaders([]string{
+			"authorization",
+		}),
+
+		handlers.AllowCredentials(),
+	)
+
 	svr := &http.Server{
 		Addr:    this.addr,
-		Handler: handlers.CORS()(r),
+		Handler: corsmiddleware(r),
 	}
 
 	log.Printf("Listening on: http://localhost%s", this.addr)
