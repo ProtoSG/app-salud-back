@@ -159,7 +159,7 @@ Los endpoints están anidados bajo `/api` por defecto. Ejemplo con `curl` o Post
 
 ### Autenticación
 
-- **POST `/api/auth/login`**  
+- **POST `/api/login`**  
   - Body (JSON):
     ```json
     {
@@ -170,7 +170,8 @@ Los endpoints están anidados bajo `/api` por defecto. Ejemplo con `curl` o Post
   - Respuesta:
     ```json
     {
-      "token": "<JWT>"
+      "id": "1",
+      "email": "user@ejemplo.com"
     }
     ```
 
@@ -197,9 +198,8 @@ Los endpoints están anidados bajo `/api` por defecto. Ejemplo con `curl` o Post
 
 > Todos estos endpoints requieren un header `Authorization: Bearer <JWT>`.
 
-- **GET `/api/paciente`** → Listar todos los pacientes.
-- **GET `/api/paciente/{id}`** → Obtener paciente por ID.
-- **POST `/api/paciente`** → Crear nuevo paciente.
+- **GET `/api/patient`** → Listar todos los pacientes.
+- **POST `/api/patient`** → Crear nuevo paciente.
   ```json
   {
     "first_name": "María",
@@ -209,39 +209,14 @@ Los endpoints están anidados bajo `/api` por defecto. Ejemplo con `curl` o Post
     "gender": "F",
     "address": "Av. Siempre Viva 123",
     "phone": "987654321",
-    "email": "maria.garcia@ejemplo.com"
+    "email": "maria.garcia@ejemplo.com",
+    "photo_url": "https://photo.com"
   }
   ```
-- **PUT `/api/paciente/{id}`** → Actualizar datos de paciente.
-- **DELETE `/api/paciente/{id}`** → “Borrado lógico” de paciente.
 
 ### Citas Médicas
 
 - **GET `/api/medicalAppointment`**
-- **GET `/api/medicalAppointment/{id}`**
-- **POST `/api/medicalAppointment`**
-  ```json
-  {
-    "paciente_id": 3,
-    "medico_id": 2,
-    "fecha_hora": "2025-07-15T14:30:00Z",
-    "duracion_minutos": 30,
-    "motivo": "Chequeo general"
-  }
-  ```
-- **PUT `/api/medicalAppointment/{id}`**
-- **DELETE `/api/medicalAppointment/{id}`**
-
-### Diagnósticos, Tratamientos y Resultados de Laboratorio
-
-- **GET `/api/diagnosis`**, **POST**, **GET por ID**, **PUT**, **DELETE**  
-- **GET `/api/treatment`**, **POST**, **GET por ID**, **PUT**, **DELETE**  
-- **GET `/api/labResult`**, **POST**, **GET por ID**, **PUT**, **DELETE**  
-
-### Vacunas y Antecedentes Médicos
-
-- **GET `/api/vaccine`**, **POST**, **GET por ID**, **PUT**, **DELETE**  
-- **GET `/api/medicalHistory`**, **POST**, **GET por ID**, **PUT**, **DELETE**  
 
 ### Recetas y Detalles de Receta
 
