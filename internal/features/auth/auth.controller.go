@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/ProtoSG/app-salud-back/internal/features/usuario"
+	"github.com/ProtoSG/app-salud-back/internal/features/user"
 	"github.com/ProtoSG/app-salud-back/internal/middleware"
 	"github.com/ProtoSG/app-salud-back/internal/utils"
 )
@@ -18,7 +18,7 @@ func NewController(service *Service) *Controller {
 }
 
 func (this *Controller) Register(w http.ResponseWriter, r *http.Request) {
-	payload := &usuario.User{}
+	payload := &user.User{}
 	if err := utils.ReadJSON(r, payload); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err.Error())
 		return

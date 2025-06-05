@@ -4,12 +4,12 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/ProtoSG/app-salud-back/internal/features/usuario"
+	"github.com/ProtoSG/app-salud-back/internal/features/user"
 	"github.com/ProtoSG/app-salud-back/internal/utils"
 )
 
 type Repository interface {
-	CreateUser(user *usuario.User) (int64, error)
+	CreateUser(user *user.User) (int64, error)
 	FindUserByEmail(email string) (*UserAuth, error)
 }
 
@@ -21,7 +21,7 @@ func NewPostgreRepo(db *sql.DB) Repository {
 	return &postgreRepo{db}
 }
 
-func (r *postgreRepo) CreateUser(user *usuario.User) (int64, error) {
+func (r *postgreRepo) CreateUser(user *user.User) (int64, error) {
 	const q = `
 		INSERT INTO users (role_id, first_name, last_name, email, password)
 		VALUES ($1, $2, $3, $4, $5)

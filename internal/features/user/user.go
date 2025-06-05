@@ -1,4 +1,4 @@
-package usuario
+package user
 
 type User struct {
 	RoleID    int    `json:"role_id" validate:"required"`
@@ -8,7 +8,7 @@ type User struct {
 	Password  string `json:"password" validate:"required"`
 }
 
-func NewUsuario(roleID int, firstName, lastName, email, password string) *User {
+func NewUser(roleID int, firstName, lastName, email, password string) *User {
 	return &User{
 		RoleID:    roleID,
 		FirstName: firstName,

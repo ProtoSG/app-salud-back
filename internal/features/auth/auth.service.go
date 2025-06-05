@@ -3,7 +3,7 @@ package auth
 import (
 	"fmt"
 
-	"github.com/ProtoSG/app-salud-back/internal/features/usuario"
+	"github.com/ProtoSG/app-salud-back/internal/features/user"
 	"github.com/ProtoSG/app-salud-back/internal/utils"
 )
 
@@ -29,7 +29,7 @@ func (this *Service) CreateUser(roleID int, firstName, lastName, email, password
 		return 0, fmt.Errorf("service Create: %w", err)
 	}
 
-	user := usuario.NewUsuario(roleID, firstName, lastName, email, hashedPassword)
+	user := user.NewUser(roleID, firstName, lastName, email, hashedPassword)
 	return this.repo.CreateUser(user)
 }
 

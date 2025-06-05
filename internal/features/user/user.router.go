@@ -1,4 +1,4 @@
-package usuario
+package user
 
 import "github.com/gorilla/mux"
 
