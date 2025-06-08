@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/ProtoSG/app-salud-back/internal/middleware"
 	"github.com/ProtoSG/app-salud-back/internal/router"
 	"github.com/ProtoSG/app-salud-back/internal/services"
 	"github.com/ProtoSG/app-salud-back/internal/utils"
@@ -57,7 +58,7 @@ func (this *APIServer) Run() error {
 
 	svr := &http.Server{
 		Addr:    this.addr,
-		Handler: corsmiddleware(r),
+		Handler: corsmiddleware(middleware.Logging(r)),
 	}
 
 	log.Printf("Listening on: http://localhost%s", this.addr)
