@@ -20,3 +20,9 @@ type PatientBasicData struct {
 	Gender    string `json:"gender"`
 	Age       int    `json:"age"`
 }
+
+type PatientFilters struct {
+	Gender   string
+	RangeAge [2]int
+	Disease  string
+}

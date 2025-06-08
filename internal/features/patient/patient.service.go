@@ -49,6 +49,6 @@ func (this *Service) Create(
 	return this.repo.Create(patient)
 }
 
-func (this *Service) Read() ([]*PatientBasicData, error) {
-	return this.repo.Read()
+func (this *Service) Read(page, limit int, filters PatientFilters) ([]*PatientBasicData, error) {
+	return this.repo.Read(page, limit, filters)
 }

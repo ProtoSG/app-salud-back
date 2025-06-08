@@ -3,6 +3,8 @@ package patient
 import (
 	"database/sql"
 	"fmt"
+	"log"
+	"strings"
 
 	"github.com/ProtoSG/app-salud-back/internal/utils"
 )
@@ -10,7 +12,7 @@ import (
 type Repository interface {
 	Create(patient *Patient) (int64, error)
 	FindPatientByDNI(dni string) error
-	Read() ([]*PatientBasicData, error)
+	Read(page, limit int, filters PatientFilters) ([]*PatientBasicData, error)
 }
 
 type postgreRepo struct {
@@ -77,18 +79,89 @@ func (this *postgreRepo) FindPatientByDNI(dni string) error {
 	return nil
 }
 
-func (this *postgreRepo) Read() ([]*PatientBasicData, error) {
-	const q = `
-		SELECT
-			p.patient_id,
-			(p.first_name || ' ' || p.last_name) AS full_name,
-			p.gender,
-			EXTRACT(YEAR FROM AGE(CURRENT_DATE, p.birth_date))::INT
-		FROM patient p
-		WHERE p.is_deleted = FALSE 
-	`
+func (this *postgreRepo) Read(
+	page, limit int,
+	filters PatientFilters,
+) ([]*PatientBasicData, error) {
+	offset := (page - 1) * limit
 
-	rows, err := this.db.Query(q)
+	whereParts := []string{"true"}
+	args := []any{}
+	argPos := 1
+
+	if filters.Gender != "" {
+		whereParts = append(whereParts,
+			fmt.Sprintf("gender = $%d", argPos),
+		)
+		args = append(args, filters.Gender)
+		argPos++
+	}
+
+	if filters.RangeAge[0] != 0 || filters.RangeAge[1] != 0 {
+		if filters.RangeAge[0] != 0 && filters.RangeAge[1] != 0 {
+			whereParts = append(whereParts,
+				fmt.Sprintf("age BETWEEN $%d AND $%d", argPos, argPos+1),
+			)
+			args = append(args,
+				filters.RangeAge[0],
+				filters.RangeAge[1],
+			)
+			argPos += 2
+		} else if filters.RangeAge[0] != 0 {
+			whereParts = append(whereParts,
+				fmt.Sprintf("age >= $%d", argPos),
+			)
+			args = append(args, filters.RangeAge[0])
+			argPos++
+		} else {
+			whereParts = append(whereParts,
+				fmt.Sprintf("age <= $%d", argPos),
+			)
+			args = append(args, filters.RangeAge[1])
+			argPos++
+		}
+	}
+
+	if filters.Disease != "" {
+		whereParts = append(whereParts,
+			fmt.Sprintf("diseases @> ARRAY[$%d]::varchar[]", argPos),
+		)
+		args = append(args, filters.Disease)
+		argPos++
+	}
+
+	whereSQL := strings.Join(whereParts, " AND ")
+	args = append(args, limit, offset)
+	limPos := argPos
+	offPos := argPos + 1
+
+	q := fmt.Sprintf(`
+		WITH patient_info AS (
+			SELECT
+				p.patient_id,
+				p.first_name || ' ' || p.last_name AS full_name,
+				p.gender,
+				EXTRACT(YEAR FROM AGE(CURRENT_DATE, p.birth_date))::INT AS age,
+				array_agg(d.description) AS diseases
+			FROM patient p
+			JOIN diagnosis d
+				ON d.patient_id = p.patient_id
+			WHERE NOT p.is_deleted
+			GROUP BY
+				p.patient_id, p.first_name, p.last_name, p.gender, p.birth_date
+		)
+		SELECT
+			patient_id,
+			full_name,
+			gender,
+			age
+		FROM patient_info
+		WHERE %s
+		LIMIT $%d
+		OFFSET $%d;
+		`, whereSQL, limPos, offPos)
+
+	rows, err := this.db.Query(q, args...)
 	if err != nil {
 		return nil, fmt.Errorf("Error en la consulta: %w", err)
 	}
