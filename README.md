@@ -198,7 +198,18 @@ Los endpoints están anidados bajo `/api` por defecto. Ejemplo con `curl` o Post
 
 > Todos estos endpoints requieren un header `Authorization: Bearer <JWT>`.
 
-- **GET `/api/patient`** → Listar todos los pacientes.
+- **GET `/api/patient?page=1&limit=9&gender=M&minAge=10&maxAge=40&disiase=Gripe`** → Listar todos los pacientes.
+  ```json
+  [
+    {
+      "patient_id": "1",
+      "full_name": "María González",
+      "gender": "F",
+      "age": 39
+    }
+  ]
+  ```
+
 - **POST `/api/patient`** → Crear nuevo paciente.
   ```json
   {
