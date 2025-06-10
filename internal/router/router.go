@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/ProtoSG/app-salud-back/internal/features/auth"
+	"github.com/ProtoSG/app-salud-back/internal/features/diagnosis"
 	medicalappointment "github.com/ProtoSG/app-salud-back/internal/features/medicalAppointment"
 	"github.com/ProtoSG/app-salud-back/internal/features/patient"
 	"github.com/ProtoSG/app-salud-back/internal/features/prescription"
@@ -16,4 +17,5 @@ func NewRouterContainer(r *mux.Router, svc *services.ServiceContainer) {
 	medicalappointment.NewRouter(r, svc.MedicalAppointment)
 	patient.NewRouter(r, svc.Patient)
 	prescription.NewRouter(r, svc.Prescription)
+	diagnosis.NewRouter(r, svc.Diagnosis)
 }
