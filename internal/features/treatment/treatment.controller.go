@@ -41,15 +41,22 @@ func (c *Controller) CreateTreatment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	treatmentID, err := c.service.Create(payloadTreatment)
+	treatmentID, err := c.service.Create(
+		payloadTreatment.PatientID,
+		payloadTreatment.DoctorID,
+		payloadTreatment.StartDate,
+		payloadTreatment.EndDate,
+		payloadTreatment.Description,
+		payloadTreatment.Observations,
+	)
 	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	utils.WriteJSON(w, http.StatusCreated, map[string]interface{}{
-		"message":      "Tratamiento creado correctamente",
-		"treatment_id": treatmentID,
+		"ID":      treatmentID,
+		"message": "Tratamiento creado correctamente",
 	})
 }
 
@@ -75,6 +82,10 @@ func (c *Controller) GetTreatmentsByPatientID(w http.ResponseWriter, r *http.Req
 
 	treatments, err := c.service.ReadByPatientID(patientID)
 	if err != nil {
+		if _, ok := err.(*utils.EntityNotFound); ok {
+			utils.WriteError(w, http.StatusNotFound, err.Error())
+			return
+		}
 		utils.WriteError(w, http.StatusInternalServerError, err.Error())
 		return
 	}

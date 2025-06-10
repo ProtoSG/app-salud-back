@@ -49,7 +49,7 @@ func (r *postgreRepo) ReadByPatientID(id int) ([]*TreatmentBase, error) {
 		ORDER BY start_date ASC;
 	`
 
-	var treatments []*TreatmentBase
+	treatments := []*TreatmentBase{}
 	rows, err := r.db.Query(q, id)
 	if err != nil {
 		return nil, fmt.Errorf("error en la consulta: %v", err)

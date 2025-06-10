@@ -7,7 +7,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func NewRouter(r *mux.Router, svc Service) {
+func NewRouter(r *mux.Router, svc *Service) {
 	controller := NewController(svc)
 
 	r.Handle("/treatment", middleware.Auth(http.HandlerFunc(controller.CreateTreatment))).Methods("POST")
