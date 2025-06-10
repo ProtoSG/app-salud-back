@@ -16,12 +16,6 @@ func NewController(service *Service) *Controller {
 }
 
 func (this *Controller) Register(w http.ResponseWriter, r *http.Request) {
-	_, ok := middleware.FromContext(r.Context())
-	if !ok {
-		utils.WriteError(w, http.StatusUnauthorized, "No hay claims en contexto")
-		return
-	}
-
 	req := &Prescription{}
 	if err := utils.ReadJSON(r, &req); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err.Error())
@@ -29,7 +23,10 @@ func (this *Controller) Register(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	// NOTE: Luego agregar la validación de los campos con el middleware
+	if validateErrors := middleware.ValidateStruct(req); validateErrors != nil {
+		utils.WriteError(w, http.StatusBadRequest, validateErrors)
+		return
+	}
 
 	pres := &Prescription{
 		PatientID:           req.PatientID,
