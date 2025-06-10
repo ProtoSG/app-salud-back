@@ -52,3 +52,7 @@ func (this *Service) Create(
 func (this *Service) Read(page, limit int, filters PatientFilters) ([]*PatientBasicData, error) {
 	return this.repo.Read(page, limit, filters)
 }
+
+func (this *Service) ReadByID(id int) (*PatientInfo, error) {
+	return this.repo.ReadById(id)
+}

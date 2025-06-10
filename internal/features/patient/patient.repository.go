@@ -3,7 +3,6 @@ package patient
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/ProtoSG/app-salud-back/internal/utils"
@@ -13,6 +12,7 @@ type Repository interface {
 	Create(patient *Patient) (int64, error)
 	FindPatientByDNI(dni string) error
 	Read(page, limit int, filters PatientFilters) ([]*PatientBasicData, error)
+	ReadById(id int) (*PatientInfo, error)
 }
 
 type postgreRepo struct {
@@ -182,4 +182,41 @@ func (this *postgreRepo) Read(
 	}
 
 	return patients, nil
+}
+
+func (this *postgreRepo) ReadById(id int) (*PatientInfo, error) {
+	const q = `
+		SELECT
+			p.patient_id,
+			p.first_name,
+			p.last_name,
+			EXTRACT(YEAR FROM AGE(CURRENT_DATE, p.birth_date))::INT AS age,
+			p.address,
+			p.phone,
+    	array_to_string(array_agg(a.name), ',') AS allergies
+		FROM patient p 
+		LEFT JOIN allergy a ON p.patient_id = a.patient_id
+		WHERE p.patient_id = $1
+		GROUP BY p.patient_id
+	`
+	patient := &PatientInfo{}
+	if err := this.db.QueryRow(
+		q,
+		id,
+	).Scan(
+		&patient.PatientID,
+		&patient.FirstName,
+		&patient.LastName,
+		&patient.Age,
+		&patient.Address,
+		&patient.Phone,
+		&patient.Allergy,
+	); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, utils.NewEntityNotFound(id, "ID", "Patient")
+		}
+		return nil, fmt.Errorf("Error en la consulta: %w", err)
+	}
+
+	return patient, nil
 }

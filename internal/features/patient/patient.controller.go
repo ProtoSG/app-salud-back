@@ -1,12 +1,12 @@
 package patient
 
 import (
-	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/ProtoSG/app-salud-back/internal/middleware"
 	"github.com/ProtoSG/app-salud-back/internal/utils"
+	"github.com/gorilla/mux"
 )
 
 type Controller struct {
@@ -103,4 +103,25 @@ func (this *Controller) GetAll(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.WriteJSON(w, http.StatusOK, patients)
+}
+
+func (this *Controller) GetByID(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, "Formato de ID inválido")
+		return
+	}
+
+	patient, err := this.service.ReadByID(id)
+	if err != nil {
+		if _, ok := err.(*utils.EntityNotFound); ok {
+			utils.WriteError(w, http.StatusNotFound, err.Error())
+			return
+		}
+		utils.WriteError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	utils.WriteJSON(w, http.StatusOK, patient)
 }

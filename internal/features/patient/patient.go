@@ -15,7 +15,7 @@ type Patient struct {
 }
 
 type PatientBasicData struct {
-	PatientID string `json:"patient_id"`
+	PatientID int    `json:"patient_id"`
 	FullName  string `json:"full_name"`
 	Gender    string `json:"gender"`
 	Age       int    `json:"age"`
@@ -25,4 +25,14 @@ type PatientFilters struct {
 	Gender   string
 	RangeAge [2]int
 	Disease  string
+}
+
+type PatientInfo struct {
+	PatientID int    `json:"patient_id"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Age       int    `json:"age"`
+	Address   string `json:"address"`
+	Phone     string `json:"phone"`
+	Allergy   string `json:"allergy"`
 }
