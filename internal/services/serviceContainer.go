@@ -4,6 +4,7 @@ import (
 	"database/sql"
 
 	"github.com/ProtoSG/app-salud-back/internal/features/auth"
+	"github.com/ProtoSG/app-salud-back/internal/features/diagnosis"
 	medicalappointment "github.com/ProtoSG/app-salud-back/internal/features/medicalAppointment"
 	"github.com/ProtoSG/app-salud-back/internal/features/patient"
 	"github.com/ProtoSG/app-salud-back/internal/features/prescription"
@@ -16,6 +17,7 @@ type ServiceContainer struct {
 	MedicalAppointment *medicalappointment.Service
 	Patient            *patient.Service
 	Prescription       *prescription.Service
+	Diagnosis          *diagnosis.Service
 }
 
 func NewServiceContainer(db *sql.DB) *ServiceContainer {
@@ -24,6 +26,7 @@ func NewServiceContainer(db *sql.DB) *ServiceContainer {
 	mAppt := medicalappointment.NewPostgreRepo(db)
 	patientRepo := patient.NewPostgreRepo(db)
 	presRepo := prescription.NewPostgreRepo(db)
+	diagnosisRepo := diagnosis.NewPostgreRepo(db)
 
 	return &ServiceContainer{
 		User:               user.NewService(userRepo),
@@ -31,5 +34,6 @@ func NewServiceContainer(db *sql.DB) *ServiceContainer {
 		MedicalAppointment: medicalappointment.NewService(mAppt),
 		Patient:            patient.NewService(patientRepo),
 		Prescription:       prescription.NewService(presRepo),
+		Diagnosis:          diagnosis.NewService(diagnosisRepo),
 	}
 }
