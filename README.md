@@ -210,6 +210,19 @@ Los endpoints están anidados bajo `/api` por defecto. Ejemplo con `curl` o Post
   ]
   ```
 
+- **GET `/api/patient/{id}`** → Obtener un paciente por ID.
+  ```json
+  {
+    "patient_id": 1,
+    "first_name": "María",
+    "last_name": "González",
+    "age": 39,
+    "address": "C/ Falsa, 123, Madrid",
+    "phone": "600123456",
+    "allergy": ""
+  }
+  ```
+
 - **POST `/api/patient`** → Crear nuevo paciente.
   ```json
   {
