@@ -3,6 +3,7 @@ package patient
 import (
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/ProtoSG/app-salud-back/internal/middleware"
 	"github.com/ProtoSG/app-salud-back/internal/utils"
@@ -17,6 +18,16 @@ func NewController(service *Service) *Controller {
 	return &Controller{service}
 }
 
+// @Summary     Crea un nuevo paciente
+// @Description Registra un nuevo paciente en la base de datos.
+// @Tags        patient
+// @Accept      json
+// @Produce     json
+// @Param       body      body      Patient         true  "Datos del paciente"
+// @Success     201       {object}  utils.Response                   "Paciente creado exitosamente"
+// @Failure     400       {object}  utils.ErrorResponse              "Solicitud inválida"
+// @Failure     500       {object}  utils.ErrorResponse              "Error interno del servidor"
+// @Router      /patient [post]
 func (this *Controller) Create(w http.ResponseWriter, r *http.Request) {
 	payloadPatient := &Patient{}
 	if err := utils.ReadJSON(r, &payloadPatient); err != nil {
@@ -24,8 +35,9 @@ func (this *Controller) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := middleware.ValidateStruct(payloadPatient); err != nil {
-		utils.WriteError(w, http.StatusBadRequest, err)
+	if validateErrors := middleware.ValidateStruct(payloadPatient); validateErrors != nil {
+		msg := strings.Join(validateErrors, "; ")
+		utils.WriteError(w, http.StatusBadRequest, msg)
 		return
 	}
 
@@ -45,12 +57,26 @@ func (this *Controller) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusCreated, map[string]any{
-		"id":      patient_id,
-		"message": "Paciente creado",
+	utils.WriteJSON(w, http.StatusCreated, utils.Response{
+		ID:      patient_id,
+		Message: "Paciente creado",
 	})
 }
 
+// @Summary     Lista pacientes con filtros y paginación
+// @Description Obtiene la lista de pacientes, con parámetros opcionales de página, límite, género, enfermedad y rango de edad.
+// @Tags        patient
+// @Produce     json
+// @Param       page     query     int              false  "Número de página"        default(1)
+// @Param       limit    query     int              false  "Resultados por página"   default(9)
+// @Param       gender   query     string           false  "Filtrar por género"
+// @Param       disease  query     string           false  "Filtrar por enfermedad"
+// @Param       minAge   query     int              false  "Edad mínima"             default(0)
+// @Param       maxAge   query     int              false  "Edad máxima"             default(0)
+// @Success     200      {array}   PatientBasicData                            "Lista de pacientes"
+// @Failure     400      {object}  utils.ErrorResponse               "Parámetros inválidos"
+// @Failure     500      {object}  utils.ErrorResponse               "Error interno del servidor"
+// @Router      /patient [get]
 func (this *Controller) GetAll(w http.ResponseWriter, r *http.Request) {
 	parseInt := func(key string, defaultVal int, errMsg string) (int, bool) {
 		s := r.URL.Query().Get(key)
@@ -105,6 +131,16 @@ func (this *Controller) GetAll(w http.ResponseWriter, r *http.Request) {
 	utils.WriteJSON(w, http.StatusOK, patients)
 }
 
+// @Summary     Obtiene un paciente por ID
+// @Description Recupera el detalle de un paciente dado su identificador.
+// @Tags        patient
+// @Produce     json
+// @Param       id    path      int              true  "ID del paciente"
+// @Success     200   {object}  PatientInfo                         "Datos del paciente"
+// @Failure     400   {object}  utils.ErrorResponse             "ID inválido"
+// @Failure     404   {object}  utils.ErrorResponse             "Paciente no encontrado"
+// @Failure     500   {object}  utils.ErrorResponse             "Error interno del servidor"
+// @Router      /patient/{id} [get]
 func (this *Controller) GetByID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
