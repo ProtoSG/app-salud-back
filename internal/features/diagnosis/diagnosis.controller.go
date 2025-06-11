@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/ProtoSG/app-salud-back/internal/middleware"
 	"github.com/ProtoSG/app-salud-back/internal/utils"
@@ -18,19 +19,18 @@ func NewController(service *Service) *Controller {
 	return &Controller{service}
 }
 
+// @Summary     Registra un nuevo diagnóstico
+// @Description Crea un nuevo diagnóstico para un paciente (solo DOCTOR o ENFERMERO).
+// @Tags        diagnosis
+// @Accept      json
+// @Produce     json
+// @Param       body  body      Diagnosis             true  "Datos del diagnóstico"
+// @Success     201   {object}  utils.Response                          "Diagnóstico creado exitosamente"
+// @Failure     400   {object}  utils.ErrorResponse                     "Solicitud inválida"
+// @Failure     401   {object}  utils.ErrorResponse                     "No autorizado"
+// @Failure     500   {object}  utils.ErrorResponse                     "Error interno del servidor"
+// @Router      /diagnosis [post]
 func (this *Controller) Register(w http.ResponseWriter, r *http.Request) {
-	claims, ok := middleware.FromContext(r.Context())
-	if !ok {
-		utils.WriteError(w, http.StatusUnauthorized, "No hay claims en el contexto.")
-		return
-	}
-
-	roleName := claims["role_name"].(string)
-	if roleName != "DOCTOR" && roleName != "ENFERMERO" {
-		utils.WriteError(w, http.StatusUnauthorized, "No estas autorizado.")
-		return
-	}
-
 	payloadDiagnosis := &Diagnosis{}
 	if err := utils.ReadJSON(r, &payloadDiagnosis); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err.Error())
@@ -38,7 +38,8 @@ func (this *Controller) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if validationErrors := middleware.ValidateStruct(payloadDiagnosis); validationErrors != nil {
-		utils.WriteError(w, http.StatusBadRequest, validationErrors)
+		msg := strings.Join(validationErrors, "; ")
+		utils.WriteError(w, http.StatusBadRequest, msg)
 		return
 	}
 
@@ -54,25 +55,24 @@ func (this *Controller) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusCreated, map[string]any{
-		"ID":      diagnosisID,
-		"message": "Diagnostico creado exitosamente",
+	utils.WriteJSON(w, http.StatusCreated, utils.Response{
+		ID:      diagnosisID,
+		Message: "Diagnostico creado exitosamente",
 	})
 }
 
+// @Summary     Obtiene un diagnóstico por ID
+// @Description Recupera un diagnóstico existente por su identificador (solo DOCTOR o ENFERMERO).
+// @Tags        diagnosis
+// @Produce     json
+// @Param       id    path      int                   true  "ID del diagnóstico"
+// @Success     200   {object}  DiagnosisBase                               "Detalle del diagnóstico"
+// @Failure     400   {object}  utils.ErrorResponse                     "ID inválido"
+// @Failure     401   {object}  utils.ErrorResponse                     "No autorizado"
+// @Failure     404   {object}  utils.ErrorResponse                     "Diagnóstico no encontrado"
+// @Failure     500   {object}  utils.ErrorResponse                     "Error interno del servidor"
+// @Router      /diagnosis/{id} [get]
 func (this *Controller) GetByID(w http.ResponseWriter, r *http.Request) {
-	claims, ok := middleware.FromContext(r.Context())
-	if !ok {
-		utils.WriteError(w, http.StatusUnauthorized, "No hay claims en el contexto.")
-		return
-	}
-
-	roleName := claims["role_name"].(string)
-	if roleName != "DOCTOR" && roleName != "ENFERMERO" {
-		utils.WriteError(w, http.StatusUnauthorized, "No estas autorizado.")
-		return
-	}
-
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
