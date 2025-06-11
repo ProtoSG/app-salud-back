@@ -15,6 +15,14 @@ func NewController(service *Service) *Controller {
 	return &Controller{service}
 }
 
+// @Summary     Obtiene las citas del día
+// @Description Retorna las citas médicas programadas para hoy para el usuario autenticado (solo DOCTOR o ENFERMERO).
+// @Tags        medicalappointment
+// @Produce     json
+// @Success     200 {array}   MedicalAppointmentByDoctor     "Lista de citas para hoy"
+// @Failure     401 {object}  utils.ErrorResponse   "No autorizado"
+// @Failure     500 {object}  utils.ErrorResponse   "Error interno del servidor"
+// @Router      /medicalappointment/today [get]
 func (this *Controller) GetAppointmentsToday(w http.ResponseWriter, r *http.Request) {
 	claims, ok := middleware.FromContext(r.Context())
 	if !ok {
@@ -23,7 +31,6 @@ func (this *Controller) GetAppointmentsToday(w http.ResponseWriter, r *http.Requ
 	}
 
 	userID := int(claims["user_id"].(float64))
-	// roleName := claims["roleName"].(string)
 
 	appointments, err := this.service.ReadAppointmentsToday(userID)
 	if err != nil {
