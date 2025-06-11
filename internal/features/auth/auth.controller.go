@@ -3,6 +3,7 @@ package auth
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/ProtoSG/app-salud-back/internal/features/user"
 	"github.com/ProtoSG/app-salud-back/internal/middleware"
@@ -17,6 +18,16 @@ func NewController(service *Service) *Controller {
 	return &Controller{service}
 }
 
+// @Summary      Registra un nuevo usuario
+// @Description  Crea un nuevo usuario en la base de datos.
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        body  body      user.User            true  "Datos del usuario"
+// @Success      201   {object}  utils.Response                              "Usuario creado correctamente"
+// @Failure      400   {object}  utils.ErrorResponse                         "Solicitud inválida"
+// @Failure      500   {object}  utils.ErrorResponse                         "Error interno del servidor"
+// @Router       /register [post]
 func (this *Controller) Register(w http.ResponseWriter, r *http.Request) {
 	payload := &user.User{}
 	if err := utils.ReadJSON(r, payload); err != nil {
@@ -25,7 +36,8 @@ func (this *Controller) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if validationErrors := middleware.ValidateStruct(payload); validationErrors != nil {
-		utils.WriteError(w, http.StatusBadRequest, validationErrors)
+		msg := strings.Join(validationErrors, "; ")
+		utils.WriteError(w, http.StatusBadRequest, msg)
 		return
 	}
 
@@ -41,14 +53,25 @@ func (this *Controller) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := map[string]string{
-		"id":      fmt.Sprintf("%d", id),
-		"message": fmt.Sprintf("Usuario con ID %d creado", id),
+	res := utils.Response{
+		ID:      id,
+		Message: "Usuario creado correctamente",
 	}
 
-	utils.WriteJSON(w, http.StatusCreated, data)
+	utils.WriteJSON(w, http.StatusCreated, res)
 }
 
+// @Summary     Iniciar sesión con un usuario
+// @Description Autentica al usuario con email y contraseña, y establece una cookie con el JWT.
+// @Tags        auth
+// @Accept      json
+// @Produce     json
+// @Param       body  body      AuthLogin             true  "Credenciales del usuario"
+// @Success     200   {object}  utils.AuthResponse   "Usuario autenticado correctamente"
+// @Failure     400   {object}  utils.ErrorResponse   "Solicitud inválida"
+// @Failure     401   {object}  utils.ErrorResponse   "Credenciales inválidas o usuario no encontrado"
+// @Failure     500   {object}  utils.ErrorResponse   "Error interno del servidor"
+// @Router      /login [post]
 func (this *Controller) Login(w http.ResponseWriter, r *http.Request) {
 	userLogin := &AuthLogin{}
 	if err := utils.ReadJSON(r, userLogin); err != nil {
@@ -57,7 +80,8 @@ func (this *Controller) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if details := middleware.ValidateStruct(userLogin); details != nil {
-		utils.WriteError(w, http.StatusBadRequest, details)
+		msg := strings.Join(details, "; ")
+		utils.WriteError(w, http.StatusBadRequest, msg)
 		return
 	}
 
@@ -86,9 +110,9 @@ func (this *Controller) Login(w http.ResponseWriter, r *http.Request) {
 		HttpOnly: true,
 	})
 
-	utils.WriteJSON(w, http.StatusOK, map[string]any{
-		"id":    user.UserID,
-		"email": user.Email,
+	utils.WriteJSON(w, http.StatusOK, utils.AuthResponse{
+		ID:    user.UserID,
+		Email: user.Email,
 	})
 }
 
