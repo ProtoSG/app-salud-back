@@ -1,0 +1,1415 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API REST para gestion de salud",
+        "title": "App Salud API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api",
+    "paths": {
+        "/diagnosis": {
+            "post": {
+                "description": "Crea un nuevo diagnóstico para un paciente (solo DOCTOR o ENFERMERO).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "diagnosis"
+                ],
+                "summary": "Registra un nuevo diagnóstico",
+                "parameters": [
+                    {
+                        "description": "Datos del diagnóstico",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/diagnosis.Diagnosis"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Diagnóstico creado exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Solicitud inválida",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/diagnosis/{id}": {
+            "get": {
+                "description": "Recupera un diagnóstico existente por su identificador (solo DOCTOR o ENFERMERO).",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "diagnosis"
+                ],
+                "summary": "Obtiene un diagnóstico por ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID del diagnóstico",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalle del diagnóstico",
+                        "schema": {
+                            "$ref": "#/definitions/diagnosis.DiagnosisBase"
+                        }
+                    },
+                    "400": {
+                        "description": "ID inválido",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Diagnóstico no encontrado",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/labresult": {
+            "post": {
+                "description": "Crea un nuevo registro de resultado de laboratorio para un paciente (solo DOCTOR o ENFERMERO).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "labresult"
+                ],
+                "summary": "Registra un nuevo resultado de laboratorio",
+                "parameters": [
+                    {
+                        "description": "Datos del resultado de laboratorio",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/labresult.LabResult"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resultado de laboratorio creado exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Solicitud inválida",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/labresult/patient/{id}": {
+            "get": {
+                "description": "Recupera todos los resultados de laboratorio asociados a un paciente (solo DOCTOR o ENFERMERO).",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "labresult"
+                ],
+                "summary": "Obtiene resultados de laboratorio por ID de paciente",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID del paciente",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de resultados de laboratorio",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/labresult.LabResultBase"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "ID inválido",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "No se encontraron resultados",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "description": "Autentica al usuario con email y contraseña, y establece una cookie con el JWT.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Iniciar sesión con un usuario",
+                "parameters": [
+                    {
+                        "description": "Credenciales del usuario",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth.AuthLogin"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuario autenticado correctamente",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AuthResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Solicitud inválida",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Credenciales inválidas o usuario no encontrado",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/medicalappointment/today": {
+            "get": {
+                "description": "Retorna las citas médicas programadas para hoy para el usuario autenticado (solo DOCTOR o ENFERMERO).",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "medicalappointment"
+                ],
+                "summary": "Obtiene las citas del día",
+                "responses": {
+                    "200": {
+                        "description": "Lista de citas para hoy",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/medicalappointment.MedicalAppointmentByDoctor"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/medicalhistory": {
+            "post": {
+                "description": "Crea un nuevo registro de historial médico para un paciente.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "medicalhistory"
+                ],
+                "summary": "Registra un nuevo antecedente médico",
+                "parameters": [
+                    {
+                        "description": "Datos del antecedente médico",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/medicalhistory.MedicalHistory"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Antecedente creado exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Solicitud inválida",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/medicalhistory/patient/{id}": {
+            "get": {
+                "description": "Recupera todos los registros de historial médico de un paciente.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "medicalhistory"
+                ],
+                "summary": "Obtiene antecedentes médicos por paciente",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "example": 123,
+                        "description": "ID del paciente",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de antecedentes médicos",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/medicalhistory.MedicalHistoryBase"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Formato de ID inválido",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "No se encontraron antecedentes",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/patient": {
+            "get": {
+                "description": "Obtiene la lista de pacientes, con parámetros opcionales de página, límite, género, enfermedad y rango de edad.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "patient"
+                ],
+                "summary": "Lista pacientes con filtros y paginación",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Número de página",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 9,
+                        "description": "Resultados por página",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filtrar por género",
+                        "name": "gender",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filtrar por enfermedad",
+                        "name": "disease",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Edad mínima",
+                        "name": "minAge",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Edad máxima",
+                        "name": "maxAge",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de pacientes",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/patient.PatientBasicData"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Parámetros inválidos",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Registra un nuevo paciente en la base de datos.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "patient"
+                ],
+                "summary": "Crea un nuevo paciente",
+                "parameters": [
+                    {
+                        "description": "Datos del paciente",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/patient.Patient"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Paciente creado exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Solicitud inválida",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/patient/{id}": {
+            "get": {
+                "description": "Recupera el detalle de un paciente dado su identificador.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "patient"
+                ],
+                "summary": "Obtiene un paciente por ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID del paciente",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Datos del paciente",
+                        "schema": {
+                            "$ref": "#/definitions/patient.PatientInfo"
+                        }
+                    },
+                    "400": {
+                        "description": "ID inválido",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Paciente no encontrado",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/prescription": {
+            "get": {
+                "description": "Recupera todas las prescripciones almacenadas.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "prescription"
+                ],
+                "summary": "Lista todas las recetas",
+                "responses": {
+                    "200": {
+                        "description": "Lista de recetas",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/prescription.PrescriptionBase"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Crea una nueva prescripción para un paciente con sus ítems asociados.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "prescription"
+                ],
+                "summary": "Registra una nueva receta médica",
+                "parameters": [
+                    {
+                        "description": "Datos de la receta",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/prescription.Prescription"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Receta creada exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Solicitud inválida",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/register": {
+            "post": {
+                "description": "Crea un nuevo usuario en la base de datos.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Registra un nuevo usuario",
+                "parameters": [
+                    {
+                        "description": "Datos del usuario",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Usuario creado correctamente",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Solicitud inválida",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/treatment": {
+            "post": {
+                "description": "Registra un tratamiento para un paciente (solo DOCTOR o ENFERMERO).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "treatment"
+                ],
+                "summary": "Crea un nuevo tratamiento",
+                "parameters": [
+                    {
+                        "description": "Datos del tratamiento",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/treatment.Treatment"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Tratamiento creado correctamente",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Solicitud inválida",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/treatment/patient/{id}": {
+            "get": {
+                "description": "Recupera todos los tratamientos asociados a un paciente (solo DOCTOR o ENFERMERO).",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "treatment"
+                ],
+                "summary": "Obtiene tratamientos por ID de paciente",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID del paciente",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de tratamientos",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/treatment.TreatmentBase"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "ID inválido",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Tratamientos no encontrados",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/vaccine": {
+            "post": {
+                "description": "Crea un nuevo registro de vacunación para un paciente.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "vaccine"
+                ],
+                "summary": "Registra un nuevo registro de vacuna",
+                "parameters": [
+                    {
+                        "description": "Datos de la vacuna",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/vaccine.Vaccine"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Vacuna creada exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Solicitud inválida",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/vaccine/patient/{id}": {
+            "get": {
+                "description": "Recupera todos los registros de vacunación asociados a un paciente.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "vaccine"
+                ],
+                "summary": "Obtiene registros de vacuna por paciente",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "example": 123,
+                        "description": "ID del paciente",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de vacunas",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/vaccine.VaccineBase"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Formato de ID inválido",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "No se encontraron registros de vacuna",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "auth.AuthLogin": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "diagnosis.Diagnosis": {
+            "type": "object",
+            "required": [
+                "description",
+                "diagnosis_date",
+                "doctor_id",
+                "patient_id"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "diagnosis_date": {
+                    "type": "string"
+                },
+                "doctor_id": {
+                    "type": "integer"
+                },
+                "observations": {
+                    "type": "string"
+                },
+                "patient_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "diagnosis.DiagnosisBase": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "diagnosis_date": {
+                    "type": "string"
+                },
+                "diagosis_id": {
+                    "type": "integer"
+                },
+                "observations": {
+                    "type": "string"
+                }
+            }
+        },
+        "labresult.LabResult": {
+            "type": "object",
+            "required": [
+                "doctor_id",
+                "patient_id",
+                "result_value",
+                "sample_date",
+                "test_type"
+            ],
+            "properties": {
+                "doctor_id": {
+                    "type": "integer"
+                },
+                "observations": {
+                    "type": "string"
+                },
+                "patient_id": {
+                    "type": "integer"
+                },
+                "result_value": {
+                    "type": "string"
+                },
+                "sample_date": {
+                    "type": "string"
+                },
+                "test_type": {
+                    "type": "string"
+                }
+            }
+        },
+        "labresult.LabResultBase": {
+            "type": "object",
+            "properties": {
+                "lab_result_id": {
+                    "type": "integer"
+                },
+                "observations": {
+                    "type": "string"
+                },
+                "result_value": {
+                    "type": "string"
+                },
+                "sample_date": {
+                    "type": "string"
+                },
+                "test_type": {
+                    "type": "string"
+                }
+            }
+        },
+        "medicalappointment.MedicalAppointmentByDoctor": {
+            "type": "object",
+            "properties": {
+                "appintment_time": {
+                    "type": "string"
+                },
+                "appointment_id": {
+                    "type": "integer"
+                },
+                "patient_id": {
+                    "type": "integer"
+                },
+                "patient_name": {
+                    "type": "string"
+                },
+                "reason": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "medicalhistory.MedicalHistory": {
+            "type": "object",
+            "required": [
+                "description",
+                "patient_id"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "patient_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "medicalhistory.MedicalHistoryBase": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "medical_history_id": {
+                    "type": "integer"
+                },
+                "recorded_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "patient.Patient": {
+            "type": "object",
+            "required": [
+                "address",
+                "birth_date",
+                "dni",
+                "email",
+                "first_name",
+                "gender",
+                "last_name",
+                "phone",
+                "photo_url"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "birth_date": {
+                    "type": "string"
+                },
+                "dni": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "photo_url": {
+                    "type": "string"
+                }
+            }
+        },
+        "patient.PatientBasicData": {
+            "type": "object",
+            "properties": {
+                "age": {
+                    "type": "integer"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "patient_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "patient.PatientInfo": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "age": {
+                    "type": "integer"
+                },
+                "allergy": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "patient_id": {
+                    "type": "integer"
+                },
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "prescription.Prescription": {
+            "type": "object",
+            "properties": {
+                "doctor_id": {
+                    "type": "integer"
+                },
+                "electronic_signature": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/prescription.PrescriptionItem"
+                    }
+                },
+                "observations": {
+                    "type": "string"
+                },
+                "patient_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "prescription.PrescriptionBase": {
+            "type": "object",
+            "properties": {
+                "issued_at": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/prescription.PrescriptionItemBase"
+                    }
+                },
+                "patient_dni": {
+                    "type": "string"
+                },
+                "patient_name": {
+                    "type": "string"
+                },
+                "prescription_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "prescription.PrescriptionItem": {
+            "type": "object",
+            "properties": {
+                "administration_route": {
+                    "type": "string"
+                },
+                "dosage": {
+                    "type": "string"
+                },
+                "duration_days": {
+                    "type": "integer"
+                },
+                "frequency": {
+                    "type": "string"
+                },
+                "medication": {
+                    "type": "string"
+                },
+                "observations": {
+                    "type": "string"
+                },
+                "prescription_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "prescription.PrescriptionItemBase": {
+            "type": "object",
+            "properties": {
+                "administration_route": {
+                    "type": "string"
+                },
+                "dosage": {
+                    "type": "string"
+                },
+                "duration_days": {
+                    "type": "integer"
+                },
+                "item_id": {
+                    "type": "integer"
+                },
+                "medication": {
+                    "type": "string"
+                }
+            }
+        },
+        "treatment.Treatment": {
+            "type": "object",
+            "required": [
+                "Description",
+                "doctor_id",
+                "end_date",
+                "observations",
+                "patient_id",
+                "start_date"
+            ],
+            "properties": {
+                "Description": {
+                    "type": "string"
+                },
+                "doctor_id": {
+                    "type": "integer"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "observations": {
+                    "type": "string"
+                },
+                "patient_id": {
+                    "type": "integer"
+                },
+                "start_date": {
+                    "type": "string"
+                }
+            }
+        },
+        "treatment.TreatmentBase": {
+            "type": "object",
+            "properties": {
+                "Description": {
+                    "type": "string"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "observations": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "treatment_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "user.User": {
+            "type": "object",
+            "required": [
+                "email",
+                "first_name",
+                "last_name",
+                "password",
+                "role_id"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "diego@gmail.com"
+                },
+                "first_name": {
+                    "type": "string",
+                    "example": "Diego Alberto"
+                },
+                "last_name": {
+                    "type": "string",
+                    "example": "Salazar Garcia"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "tuPasswordSecret"
+                },
+                "role_id": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "utils.AuthResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "diego@gmail.com"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "utils.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Error en la Solicitud"
+                },
+                "status": {
+                    "type": "integer",
+                    "example": 400
+                }
+            }
+        },
+        "utils.Response": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "message": {
+                    "type": "string",
+                    "example": "usuario creado exitosamente"
+                }
+            }
+        },
+        "vaccine.Vaccine": {
+            "type": "object",
+            "required": [
+                "administered_on",
+                "dose",
+                "patient_id",
+                "vaccine_type"
+            ],
+            "properties": {
+                "administered_on": {
+                    "type": "string"
+                },
+                "dose": {
+                    "type": "string"
+                },
+                "observations": {
+                    "type": "string"
+                },
+                "patient_id": {
+                    "type": "integer"
+                },
+                "vaccine_type": {
+                    "type": "string"
+                }
+            }
+        },
+        "vaccine.VaccineBase": {
+            "type": "object",
+            "required": [
+                "administered_on",
+                "dose",
+                "vaccine_type"
+            ],
+            "properties": {
+                "administered_on": {
+                    "type": "string"
+                },
+                "dose": {
+                    "type": "string"
+                },
+                "observations": {
+                    "type": "string"
+                },
+                "vaccine_id": {
+                    "type": "integer"
+                },
+                "vaccine_type": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

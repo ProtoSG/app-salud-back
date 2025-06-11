@@ -1,0 +1,950 @@
+basePath: /api
+definitions:
+  auth.AuthLogin:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  diagnosis.Diagnosis:
+    properties:
+      description:
+        type: string
+      diagnosis_date:
+        type: string
+      doctor_id:
+        type: integer
+      observations:
+        type: string
+      patient_id:
+        type: integer
+    required:
+    - description
+    - diagnosis_date
+    - doctor_id
+    - patient_id
+    type: object
+  diagnosis.DiagnosisBase:
+    properties:
+      description:
+        type: string
+      diagnosis_date:
+        type: string
+      diagosis_id:
+        type: integer
+      observations:
+        type: string
+    type: object
+  labresult.LabResult:
+    properties:
+      doctor_id:
+        type: integer
+      observations:
+        type: string
+      patient_id:
+        type: integer
+      result_value:
+        type: string
+      sample_date:
+        type: string
+      test_type:
+        type: string
+    required:
+    - doctor_id
+    - patient_id
+    - result_value
+    - sample_date
+    - test_type
+    type: object
+  labresult.LabResultBase:
+    properties:
+      lab_result_id:
+        type: integer
+      observations:
+        type: string
+      result_value:
+        type: string
+      sample_date:
+        type: string
+      test_type:
+        type: string
+    type: object
+  medicalappointment.MedicalAppointmentByDoctor:
+    properties:
+      appintment_time:
+        type: string
+      appointment_id:
+        type: integer
+      patient_id:
+        type: integer
+      patient_name:
+        type: string
+      reason:
+        type: string
+      status:
+        type: string
+    type: object
+  medicalhistory.MedicalHistory:
+    properties:
+      description:
+        type: string
+      patient_id:
+        type: integer
+    required:
+    - description
+    - patient_id
+    type: object
+  medicalhistory.MedicalHistoryBase:
+    properties:
+      description:
+        type: string
+      medical_history_id:
+        type: integer
+      recorded_at:
+        type: string
+    type: object
+  patient.Patient:
+    properties:
+      address:
+        type: string
+      birth_date:
+        type: string
+      dni:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      gender:
+        type: string
+      last_name:
+        type: string
+      phone:
+        type: string
+      photo_url:
+        type: string
+    required:
+    - address
+    - birth_date
+    - dni
+    - email
+    - first_name
+    - gender
+    - last_name
+    - phone
+    - photo_url
+    type: object
+  patient.PatientBasicData:
+    properties:
+      age:
+        type: integer
+      full_name:
+        type: string
+      gender:
+        type: string
+      patient_id:
+        type: integer
+    type: object
+  patient.PatientInfo:
+    properties:
+      address:
+        type: string
+      age:
+        type: integer
+      allergy:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      patient_id:
+        type: integer
+      phone:
+        type: string
+    type: object
+  prescription.Prescription:
+    properties:
+      doctor_id:
+        type: integer
+      electronic_signature:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/prescription.PrescriptionItem'
+        type: array
+      observations:
+        type: string
+      patient_id:
+        type: integer
+    type: object
+  prescription.PrescriptionBase:
+    properties:
+      issued_at:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/prescription.PrescriptionItemBase'
+        type: array
+      patient_dni:
+        type: string
+      patient_name:
+        type: string
+      prescription_id:
+        type: integer
+    type: object
+  prescription.PrescriptionItem:
+    properties:
+      administration_route:
+        type: string
+      dosage:
+        type: string
+      duration_days:
+        type: integer
+      frequency:
+        type: string
+      medication:
+        type: string
+      observations:
+        type: string
+      prescription_id:
+        type: integer
+    type: object
+  prescription.PrescriptionItemBase:
+    properties:
+      administration_route:
+        type: string
+      dosage:
+        type: string
+      duration_days:
+        type: integer
+      item_id:
+        type: integer
+      medication:
+        type: string
+    type: object
+  treatment.Treatment:
+    properties:
+      Description:
+        type: string
+      doctor_id:
+        type: integer
+      end_date:
+        type: string
+      observations:
+        type: string
+      patient_id:
+        type: integer
+      start_date:
+        type: string
+    required:
+    - Description
+    - doctor_id
+    - end_date
+    - observations
+    - patient_id
+    - start_date
+    type: object
+  treatment.TreatmentBase:
+    properties:
+      Description:
+        type: string
+      end_date:
+        type: string
+      observations:
+        type: string
+      start_date:
+        type: string
+      treatment_id:
+        type: integer
+    type: object
+  user.User:
+    properties:
+      email:
+        example: diego@gmail.com
+        type: string
+      first_name:
+        example: Diego Alberto
+        type: string
+      last_name:
+        example: Salazar Garcia
+        type: string
+      password:
+        example: tuPasswordSecret
+        type: string
+      role_id:
+        example: 1
+        type: integer
+    required:
+    - email
+    - first_name
+    - last_name
+    - password
+    - role_id
+    type: object
+  utils.AuthResponse:
+    properties:
+      email:
+        example: diego@gmail.com
+        type: string
+      id:
+        example: 1
+        type: integer
+    type: object
+  utils.ErrorResponse:
+    properties:
+      error:
+        example: Error en la Solicitud
+        type: string
+      status:
+        example: 400
+        type: integer
+    type: object
+  utils.Response:
+    properties:
+      id:
+        example: 1
+        type: integer
+      message:
+        example: usuario creado exitosamente
+        type: string
+    type: object
+  vaccine.Vaccine:
+    properties:
+      administered_on:
+        type: string
+      dose:
+        type: string
+      observations:
+        type: string
+      patient_id:
+        type: integer
+      vaccine_type:
+        type: string
+    required:
+    - administered_on
+    - dose
+    - patient_id
+    - vaccine_type
+    type: object
+  vaccine.VaccineBase:
+    properties:
+      administered_on:
+        type: string
+      dose:
+        type: string
+      observations:
+        type: string
+      vaccine_id:
+        type: integer
+      vaccine_type:
+        type: string
+    required:
+    - administered_on
+    - dose
+    - vaccine_type
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API REST para gestion de salud
+  title: App Salud API
+  version: "1.0"
+paths:
+  /diagnosis:
+    post:
+      consumes:
+      - application/json
+      description: Crea un nuevo diagnóstico para un paciente (solo DOCTOR o ENFERMERO).
+      parameters:
+      - description: Datos del diagnóstico
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/diagnosis.Diagnosis'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Diagnóstico creado exitosamente
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Solicitud inválida
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "401":
+          description: No autorizado
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Error interno del servidor
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Registra un nuevo diagnóstico
+      tags:
+      - diagnosis
+  /diagnosis/{id}:
+    get:
+      description: Recupera un diagnóstico existente por su identificador (solo DOCTOR
+        o ENFERMERO).
+      parameters:
+      - description: ID del diagnóstico
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Detalle del diagnóstico
+          schema:
+            $ref: '#/definitions/diagnosis.DiagnosisBase'
+        "400":
+          description: ID inválido
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "401":
+          description: No autorizado
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "404":
+          description: Diagnóstico no encontrado
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Error interno del servidor
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Obtiene un diagnóstico por ID
+      tags:
+      - diagnosis
+  /labresult:
+    post:
+      consumes:
+      - application/json
+      description: Crea un nuevo registro de resultado de laboratorio para un paciente
+        (solo DOCTOR o ENFERMERO).
+      parameters:
+      - description: Datos del resultado de laboratorio
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/labresult.LabResult'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Resultado de laboratorio creado exitosamente
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Solicitud inválida
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "401":
+          description: No autorizado
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Error interno del servidor
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Registra un nuevo resultado de laboratorio
+      tags:
+      - labresult
+  /labresult/patient/{id}:
+    get:
+      description: Recupera todos los resultados de laboratorio asociados a un paciente
+        (solo DOCTOR o ENFERMERO).
+      parameters:
+      - description: ID del paciente
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Lista de resultados de laboratorio
+          schema:
+            items:
+              $ref: '#/definitions/labresult.LabResultBase'
+            type: array
+        "400":
+          description: ID inválido
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "401":
+          description: No autorizado
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "404":
+          description: No se encontraron resultados
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Error interno del servidor
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Obtiene resultados de laboratorio por ID de paciente
+      tags:
+      - labresult
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Autentica al usuario con email y contraseña, y establece una cookie
+        con el JWT.
+      parameters:
+      - description: Credenciales del usuario
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/auth.AuthLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Usuario autenticado correctamente
+          schema:
+            $ref: '#/definitions/utils.AuthResponse'
+        "400":
+          description: Solicitud inválida
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "401":
+          description: Credenciales inválidas o usuario no encontrado
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Error interno del servidor
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Iniciar sesión con un usuario
+      tags:
+      - auth
+  /medicalappointment/today:
+    get:
+      description: Retorna las citas médicas programadas para hoy para el usuario
+        autenticado (solo DOCTOR o ENFERMERO).
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Lista de citas para hoy
+          schema:
+            items:
+              $ref: '#/definitions/medicalappointment.MedicalAppointmentByDoctor'
+            type: array
+        "401":
+          description: No autorizado
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Error interno del servidor
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Obtiene las citas del día
+      tags:
+      - medicalappointment
+  /medicalhistory:
+    post:
+      consumes:
+      - application/json
+      description: Crea un nuevo registro de historial médico para un paciente.
+      parameters:
+      - description: Datos del antecedente médico
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/medicalhistory.MedicalHistory'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Antecedente creado exitosamente
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Solicitud inválida
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Error interno del servidor
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Registra un nuevo antecedente médico
+      tags:
+      - medicalhistory
+  /medicalhistory/patient/{id}:
+    get:
+      description: Recupera todos los registros de historial médico de un paciente.
+      parameters:
+      - description: ID del paciente
+        example: 123
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Lista de antecedentes médicos
+          schema:
+            items:
+              $ref: '#/definitions/medicalhistory.MedicalHistoryBase'
+            type: array
+        "400":
+          description: Formato de ID inválido
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "404":
+          description: No se encontraron antecedentes
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Error interno del servidor
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Obtiene antecedentes médicos por paciente
+      tags:
+      - medicalhistory
+  /patient:
+    get:
+      description: Obtiene la lista de pacientes, con parámetros opcionales de página,
+        límite, género, enfermedad y rango de edad.
+      parameters:
+      - default: 1
+        description: Número de página
+        in: query
+        name: page
+        type: integer
+      - default: 9
+        description: Resultados por página
+        in: query
+        name: limit
+        type: integer
+      - description: Filtrar por género
+        in: query
+        name: gender
+        type: string
+      - description: Filtrar por enfermedad
+        in: query
+        name: disease
+        type: string
+      - default: 0
+        description: Edad mínima
+        in: query
+        name: minAge
+        type: integer
+      - default: 0
+        description: Edad máxima
+        in: query
+        name: maxAge
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Lista de pacientes
+          schema:
+            items:
+              $ref: '#/definitions/patient.PatientBasicData'
+            type: array
+        "400":
+          description: Parámetros inválidos
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Error interno del servidor
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Lista pacientes con filtros y paginación
+      tags:
+      - patient
+    post:
+      consumes:
+      - application/json
+      description: Registra un nuevo paciente en la base de datos.
+      parameters:
+      - description: Datos del paciente
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/patient.Patient'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Paciente creado exitosamente
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Solicitud inválida
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Error interno del servidor
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Crea un nuevo paciente
+      tags:
+      - patient
+  /patient/{id}:
+    get:
+      description: Recupera el detalle de un paciente dado su identificador.
+      parameters:
+      - description: ID del paciente
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Datos del paciente
+          schema:
+            $ref: '#/definitions/patient.PatientInfo'
+        "400":
+          description: ID inválido
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "404":
+          description: Paciente no encontrado
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Error interno del servidor
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Obtiene un paciente por ID
+      tags:
+      - patient
+  /prescription:
+    get:
+      description: Recupera todas las prescripciones almacenadas.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Lista de recetas
+          schema:
+            items:
+              $ref: '#/definitions/prescription.PrescriptionBase'
+            type: array
+        "500":
+          description: Error interno del servidor
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Lista todas las recetas
+      tags:
+      - prescription
+    post:
+      consumes:
+      - application/json
+      description: Crea una nueva prescripción para un paciente con sus ítems asociados.
+      parameters:
+      - description: Datos de la receta
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/prescription.Prescription'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Receta creada exitosamente
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Solicitud inválida
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Error interno del servidor
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Registra una nueva receta médica
+      tags:
+      - prescription
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Crea un nuevo usuario en la base de datos.
+      parameters:
+      - description: Datos del usuario
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Usuario creado correctamente
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Solicitud inválida
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Error interno del servidor
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Registra un nuevo usuario
+      tags:
+      - auth
+  /treatment:
+    post:
+      consumes:
+      - application/json
+      description: Registra un tratamiento para un paciente (solo DOCTOR o ENFERMERO).
+      parameters:
+      - description: Datos del tratamiento
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/treatment.Treatment'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Tratamiento creado correctamente
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Solicitud inválida
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "401":
+          description: No autorizado
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Error interno del servidor
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Crea un nuevo tratamiento
+      tags:
+      - treatment
+  /treatment/patient/{id}:
+    get:
+      description: Recupera todos los tratamientos asociados a un paciente (solo DOCTOR
+        o ENFERMERO).
+      parameters:
+      - description: ID del paciente
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Lista de tratamientos
+          schema:
+            items:
+              $ref: '#/definitions/treatment.TreatmentBase'
+            type: array
+        "400":
+          description: ID inválido
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "401":
+          description: No autorizado
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "404":
+          description: Tratamientos no encontrados
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Error interno del servidor
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Obtiene tratamientos por ID de paciente
+      tags:
+      - treatment
+  /vaccine:
+    post:
+      consumes:
+      - application/json
+      description: Crea un nuevo registro de vacunación para un paciente.
+      parameters:
+      - description: Datos de la vacuna
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/vaccine.Vaccine'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Vacuna creada exitosamente
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Solicitud inválida
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Error interno del servidor
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Registra un nuevo registro de vacuna
+      tags:
+      - vaccine
+  /vaccine/patient/{id}:
+    get:
+      description: Recupera todos los registros de vacunación asociados a un paciente.
+      parameters:
+      - description: ID del paciente
+        example: 123
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Lista de vacunas
+          schema:
+            items:
+              $ref: '#/definitions/vaccine.VaccineBase'
+            type: array
+        "400":
+          description: Formato de ID inválido
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "404":
+          description: No se encontraron registros de vacuna
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Error interno del servidor
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Obtiene registros de vacuna por paciente
+      tags:
+      - vaccine
+swagger: "2.0"

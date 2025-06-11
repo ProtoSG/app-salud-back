@@ -1,3 +1,8 @@
+// @title App Salud API
+// @version 1.0
+// @description API REST para gestion de salud
+// @host localhost:8080
+// @BasePath /api
 package api
 
 import (
@@ -5,12 +10,14 @@ import (
 	"log"
 	"net/http"
 
+	_ "github.com/ProtoSG/app-salud-back/docs"
 	"github.com/ProtoSG/app-salud-back/internal/middleware"
 	"github.com/ProtoSG/app-salud-back/internal/router"
 	"github.com/ProtoSG/app-salud-back/internal/services"
 	"github.com/ProtoSG/app-salud-back/internal/utils"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 type APIServer struct {
@@ -30,6 +37,7 @@ func (this *APIServer) Run() error {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", this.checkHandler)
+	r.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 
 	apiRouter := r.PathPrefix("/api").Subrouter()
 	router.NewRouterContainer(apiRouter, serviceContainer)
