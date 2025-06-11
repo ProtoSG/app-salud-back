@@ -25,7 +25,7 @@ func (this *Service) Create(
 	phone,
 	email,
 	photoUrl string,
-) (int64, error) {
+) (int, error) {
 	if err := this.repo.FindPatientByDNI(dni); err == nil {
 		return 0, fmt.Errorf("Paciente con DNI %s ya existe", dni)
 	} else {

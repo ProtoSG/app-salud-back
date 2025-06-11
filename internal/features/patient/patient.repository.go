@@ -9,7 +9,7 @@ import (
 )
 
 type Repository interface {
-	Create(patient *Patient) (int64, error)
+	Create(patient *Patient) (int, error)
 	FindPatientByDNI(dni string) error
 	Read(page, limit int, filters PatientFilters) ([]*PatientBasicData, error)
 	ReadById(id int) (*PatientInfo, error)
@@ -23,7 +23,7 @@ func NewPostgreRepo(db *sql.DB) Repository {
 	return &postgreRepo{db}
 }
 
-func (this *postgreRepo) Create(patient *Patient) (int64, error) {
+func (this *postgreRepo) Create(patient *Patient) (int, error) {
 	const q = `
 		INSERT INTO patient 
 		(first_name,
@@ -39,7 +39,7 @@ func (this *postgreRepo) Create(patient *Patient) (int64, error) {
 		RETURNING patient_id;
 	`
 
-	var patient_id int64
+	var patient_id int
 	if err := this.db.QueryRow(q,
 		patient.FirstName,
 		patient.LastName,
