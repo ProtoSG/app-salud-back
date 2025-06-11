@@ -10,6 +10,18 @@ import (
 func NewRouter(r *mux.Router, svc *Service) {
 	controller := NewController(svc)
 
-	r.Handle("/prescription", middleware.Auth(http.HandlerFunc(controller.GetAll))).Methods("GET")
-	r.Handle("/prescription", middleware.Auth(http.HandlerFunc(controller.Register))).Methods("POST")
+	r.Handle("/prescription",
+		middleware.Auth(
+			middleware.RequireRoles("DOCTOR")(
+				http.HandlerFunc(controller.GetAll),
+			),
+		),
+	).Methods("GET")
+	r.Handle("/prescription",
+		middleware.Auth(
+			middleware.RequireRoles("DOCTOR")(
+				http.HandlerFunc(controller.Register),
+			),
+		),
+	).Methods("POST")
 }
