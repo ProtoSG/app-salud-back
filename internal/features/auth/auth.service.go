@@ -15,10 +15,10 @@ func NewService(repo Repository) *Service {
 	return &Service{repo}
 }
 
-func (this *Service) CreateUser(roleID int, firstName, lastName, email, password string) (int64, error) {
+func (this *Service) CreateUser(roleID int, firstName, lastName, email, password string) (int, error) {
 	_, err := this.repo.FindUserByEmail(email)
 	if err == nil {
-		return 0, fmt.Errorf("serice Create: Usuario con email %s ya existe", email)
+		return 0, fmt.Errorf("usuario con email %s ya existe", email)
 	}
 	if _, ok := err.(*utils.EntityNotFound); !ok {
 		return 0, fmt.Errorf("service Create: %w", err)

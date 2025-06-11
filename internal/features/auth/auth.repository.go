@@ -9,7 +9,7 @@ import (
 )
 
 type Repository interface {
-	CreateUser(user *user.User) (int64, error)
+	CreateUser(user *user.User) (int, error)
 	FindUserByEmail(email string) (*UserAuth, error)
 }
 
@@ -21,14 +21,14 @@ func NewPostgreRepo(db *sql.DB) Repository {
 	return &postgreRepo{db}
 }
 
-func (r *postgreRepo) CreateUser(user *user.User) (int64, error) {
+func (r *postgreRepo) CreateUser(user *user.User) (int, error) {
 	const q = `
 		INSERT INTO users (role_id, first_name, last_name, email, password)
 		VALUES ($1, $2, $3, $4, $5)
 		RETURNING user_id
 	`
 
-	var id int64
+	var id int
 
 	err := r.db.QueryRow(
 		q,
