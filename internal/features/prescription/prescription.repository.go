@@ -8,7 +8,7 @@ import (
 )
 
 type Repository interface {
-	Create(pres *Prescription) (int64, error)
+	Create(pres *Prescription) (int, error)
 	Read() ([]*PrescriptionBase, error)
 }
 
@@ -20,7 +20,7 @@ func NewPostgreRepo(db *sql.DB) Repository {
 	return &postgreRepo{db}
 }
 
-func (this *postgreRepo) Create(pres *Prescription) (int64, error) {
+func (this *postgreRepo) Create(pres *Prescription) (int, error) {
 	ctx := context.Background()
 	tx, err := this.db.BeginTx(ctx, &sql.TxOptions{
 		Isolation: sql.LevelReadCommitted,
@@ -42,7 +42,7 @@ func (this *postgreRepo) Create(pres *Prescription) (int64, error) {
 		) VALUES ($1, $2, $3, $4)
 		RETURNING prescription_id;
 	`
-	var prescriptionID int64
+	var prescriptionID int
 	err = tx.QueryRowContext(ctx, insertPresQuery,
 		pres.PatientID,
 		pres.DoctorID,
