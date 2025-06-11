@@ -1,7 +1,6 @@
 package labresult
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/ProtoSG/app-salud-back/internal/utils"
