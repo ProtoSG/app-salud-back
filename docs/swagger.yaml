@@ -73,6 +73,25 @@ definitions:
       test_type:
         type: string
     type: object
+  medicalappointment.MedicalAppointment:
+    properties:
+      appointment_time:
+        type: string
+      doctor_id:
+        type: integer
+      duration_minutes:
+        type: integer
+      patient_id:
+        type: integer
+      reason:
+        type: string
+    required:
+    - appointment_time
+    - doctor_id
+    - duration_minutes
+    - patient_id
+    - reason
+    type: object
   medicalappointment.MedicalAppointmentByDoctor:
     properties:
       appintment_time:
@@ -86,6 +105,21 @@ definitions:
       reason:
         type: string
       status:
+        type: string
+    type: object
+  medicalappointment.MedicalAppointmentEvent:
+    properties:
+      appointment_id:
+        type: integer
+      doctor_name:
+        type: string
+      end_time:
+        type: string
+      patient_name:
+        type: string
+      reason:
+        type: string
+      start_time:
         type: string
     type: object
   medicalhistory.MedicalHistory:
@@ -532,6 +566,82 @@ paths:
       summary: Iniciar sesión con un usuario
       tags:
       - auth
+  /medicalappointment:
+    get:
+      consumes:
+      - application/json
+      description: Obtiene todas las citas del usuario autenticado entre dos fechas.
+      parameters:
+      - description: Fecha de inicio ISO8601
+        example: "2025-04-06T00:00:00Z"
+        in: query
+        name: start
+        required: true
+        type: string
+      - description: Fecha de fin ISO8601
+        example: "2025-04-12T23:59:59Z"
+        in: query
+        name: end
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Lista de eventos para el calendario
+          schema:
+            items:
+              $ref: '#/definitions/medicalappointment.MedicalAppointmentEvent'
+            type: array
+        "400":
+          description: Parámetros inválidos
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "401":
+          description: No autorizado
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Error interno del servidor
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Lista citas en un rango
+      tags:
+      - medicalappointment
+    post:
+      consumes:
+      - application/json
+      description: Registra una cita médica para un paciente (requiere rol DOCTOR
+        o ENFERMERO).
+      parameters:
+      - description: Datos de la cita médica
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/medicalappointment.MedicalAppointment'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Cita médica creada correctamente
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Solicitud inválida
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "401":
+          description: No autorizado
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Error interno del servidor
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Crea una nueva cita médica
+      tags:
+      - medicalappointment
   /medicalappointment/today:
     get:
       description: Retorna las citas médicas programadas para hoy para el usuario
