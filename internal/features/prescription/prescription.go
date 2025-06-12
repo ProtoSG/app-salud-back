@@ -3,7 +3,6 @@ package prescription
 import "time"
 
 type PrescriptionItem struct {
-	PrescriptionID      int    `json:"prescription_id"`
 	Medication          string `json:"medication"`
 	Dosage              string `json:"dosage"`
 	Frequency           string `json:"frequency"`
@@ -14,7 +13,6 @@ type PrescriptionItem struct {
 
 type Prescription struct {
 	PatientID           int                `json:"patient_id"`
-	DoctorID            int                `json:"doctor_id"`
 	ElectronicSignature string             `json:"electronic_signature"`
 	Observations        string             `json:"observations"`
 	Items               []PrescriptionItem `json:"items"`

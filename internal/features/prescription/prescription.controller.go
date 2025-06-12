@@ -27,6 +27,14 @@ func NewController(service *Service) *Controller {
 // @Failure     500   {object}  utils.ErrorResponse                    "Error interno del servidor"
 // @Router      /prescription [post]
 func (this *Controller) Register(w http.ResponseWriter, r *http.Request) {
+	claims, ok := middleware.FromContext(r.Context())
+	if !ok {
+		utils.WriteError(w, http.StatusUnauthorized, "No hay claims en contexto")
+		return
+	}
+
+	doctorID := int(claims["user_id"].(float64))
+
 	req := &Prescription{}
 	if err := utils.ReadJSON(r, &req); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err.Error())
@@ -42,13 +50,12 @@ func (this *Controller) Register(w http.ResponseWriter, r *http.Request) {
 
 	pres := &Prescription{
 		PatientID:           req.PatientID,
-		DoctorID:            req.DoctorID,
 		ElectronicSignature: req.ElectronicSignature,
 		Observations:        req.Observations,
 		Items:               req.Items,
 	}
 
-	prescriptionID, err := this.service.Create(pres)
+	prescriptionID, err := this.service.Create(doctorID, pres)
 	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err.Error())
 		return
