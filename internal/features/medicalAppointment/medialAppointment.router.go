@@ -12,7 +12,7 @@ func NewRouter(r *mux.Router, svc *Service) {
 
 	r.Handle("/medicalappointment/today",
 		middleware.Auth(
-			middleware.RequireRoles("DOCTOR", "ENFERMERO")(
+			middleware.RequireRoles("DOCTOR", "ADMINISTRADOR")(
 				http.HandlerFunc(controller.GetAppointmentsToday),
 			),
 		),
