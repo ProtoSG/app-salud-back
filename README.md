@@ -6,11 +6,9 @@ Backend para aplicación de gestión médica, escrito en Go, con PostgreSQL para
 
 ## Requisitos previos
 
-- Go 1.24+  
 - Docker + Docker Compose (si se desea ejecutar con contenedores)  
 - `make` (opcional, para comandos definidos en Makefile)  
 - Cliente HTTP (por ejemplo, Postman, Insomnia o CURL)  
-
 
 ---
 
@@ -49,6 +47,11 @@ make db-up
 Equivale a:
 ```bash
 ./migrate up "postgres://postgres:postgres@localhost:5432/app_salud?sslmode=disable"
+```
+
+Para Windos:
+```bash 
+.\migrate.exe up "postgres://postgres:postgres@localhost:5432/app_salud?sslmode=disable"
 ```
 
 ---
