@@ -12,23 +12,17 @@ func NewRouter(r *mux.Router, svc *Service) {
 
 	r.Handle("/patient",
 		middleware.Auth(
-			middleware.RequireRoles("DOCTOR", "ENFERMERO")(
-				http.HandlerFunc(controller.Create),
-			),
+			http.HandlerFunc(controller.Create),
 		),
 	).Methods("POST")
 	r.Handle("/patient",
 		middleware.Auth(
-			middleware.RequireRoles("DOCTOR", "ENFERMERO")(
-				http.HandlerFunc(controller.GetAll),
-			),
+			http.HandlerFunc(controller.GetAll),
 		),
 	).Methods("GET")
 	r.Handle("/patient/{id}",
 		middleware.Auth(
-			middleware.RequireRoles("DOCTOR", "ENFERMERO")(
-				http.HandlerFunc(controller.GetByID),
-			),
+			http.HandlerFunc(controller.GetByID),
 		),
 	).Methods("GET")
 }

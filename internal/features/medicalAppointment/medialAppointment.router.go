@@ -12,21 +12,15 @@ func NewRouter(r *mux.Router, svc *Service) {
 
 	r.Handle("/medicalappointment/today",
 		middleware.Auth(
-			middleware.RequireRoles("DOCTOR", "ADMINISTRADOR")(
-				http.HandlerFunc(controller.GetAppointmentsToday),
-			),
+			http.HandlerFunc(controller.GetAppointmentsToday),
 		),
 	).Methods("GET")
 
 	r.Handle("/medicalappointment", middleware.Auth(
-		middleware.RequireRoles("ADMINISTRADOR")(
-			http.HandlerFunc(controller.Create),
-		),
+		http.HandlerFunc(controller.Create),
 	)).Methods("POST")
 
 	r.Handle("/medicalappointment", middleware.Auth(
-		middleware.RequireRoles("ADMINISTRADOR")(
-			http.HandlerFunc(controller.ListRange),
-		),
+		http.HandlerFunc(controller.ListRange),
 	)).Methods("GET")
 }
