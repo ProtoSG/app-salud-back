@@ -1311,9 +1311,6 @@
         "prescription.Prescription": {
             "type": "object",
             "properties": {
-                "doctor_id": {
-                    "type": "integer"
-                },
                 "electronic_signature": {
                     "type": "string"
                 },
@@ -1374,9 +1371,6 @@
                 },
                 "observations": {
                     "type": "string"
-                },
-                "prescription_id": {
-                    "type": "integer"
                 }
             }
         },

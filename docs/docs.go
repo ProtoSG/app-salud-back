@@ -1317,9 +1317,6 @@ const docTemplate = `{
         "prescription.Prescription": {
             "type": "object",
             "properties": {
-                "doctor_id": {
-                    "type": "integer"
-                },
                 "electronic_signature": {
                     "type": "string"
                 },
@@ -1380,9 +1377,6 @@ const docTemplate = `{
                 },
                 "observations": {
                     "type": "string"
-                },
-                "prescription_id": {
-                    "type": "integer"
                 }
             }
         },

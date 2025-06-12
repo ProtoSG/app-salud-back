@@ -202,8 +202,6 @@ definitions:
     type: object
   prescription.Prescription:
     properties:
-      doctor_id:
-        type: integer
       electronic_signature:
         type: string
       items:
@@ -244,8 +242,6 @@ definitions:
         type: string
       observations:
         type: string
-      prescription_id:
-        type: integer
     type: object
   prescription.PrescriptionItemBase:
     properties:
