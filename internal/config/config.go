@@ -9,6 +9,7 @@ type Config struct {
 	URL          string
 	PORT         string
 	TOKEN_SECRET string
+	ORIGIN_URL   string
 }
 
 func NewConfig() *Config {
@@ -27,10 +28,16 @@ func NewConfig() *Config {
 		log.Fatal("TOKEN_SECRET not found in environments")
 	}
 
+	originURL, ok := getEnvVar("ORIGIN_URL")
+	if !ok {
+		log.Fatal("ORIGIN_URL not found in environments")
+	}
+
 	return &Config{
 		URL:          databaseURL,
 		PORT:         port,
 		TOKEN_SECRET: tokenSecret,
+		ORIGIN_URL:   originURL,
 	}
 }
 

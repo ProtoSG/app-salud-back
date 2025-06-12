@@ -14,7 +14,7 @@ func main() {
 	initDB := db.NewDBConnection(config.URL)
 	db := initDB.SetupDB()
 
-	app := api.NewAPIServer(":"+config.PORT, db)
+	app := api.NewAPIServer(":"+config.PORT, db, config.ORIGIN_URL)
 	if err := app.Run(); err != nil {
 		log.Fatal(err.Error())
 	}

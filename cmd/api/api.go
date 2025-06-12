@@ -21,11 +21,12 @@ import (
 )
 
 type APIServer struct {
-	addr string
-	db   *sql.DB
+	addr      string
+	db        *sql.DB
+	originUrl string
 }
 
-func NewAPIServer(addr string, db *sql.DB) *APIServer {
+func NewAPIServer(addr string, db *sql.DB, originUrl string) *APIServer {
 	return &APIServer{
 		addr: addr,
 		db:   db,
@@ -43,7 +44,7 @@ func (this *APIServer) Run() error {
 	router.NewRouterContainer(apiRouter, serviceContainer)
 
 	corsmiddleware := handlers.CORS(
-		handlers.AllowedOrigins([]string{"http://localhost:5173"}),
+		handlers.AllowedOrigins([]string{this.originUrl}),
 		handlers.AllowedMethods([]string{
 			"get",
 			"post",
