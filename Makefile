@@ -17,16 +17,10 @@ run:
 	done
 	@docker compose up
 
-migrate-up:
-	@echo "→ Creando las tablas de la base de datos…"
-	@goose -dir=internal/db/migrations postgres \
-	  "postgres://postgres:postgres@localhost:5432/app_salud?sslmode=disable" up
+db-up:
+	@echo "→ Levantando la base de datos…"
+	@./migrate up "postgres://postgres:postgres@localhost:5432/app_salud?sslmode=disable"
 
-migrate-down:
+db-down:
 	@echo "→ Limpiando la base de datos (down-to 0)…"
-	@goose -dir=internal/db/migrations postgres \
-	  "postgres://postgres:postgres@localhost:5432/app_salud?sslmode=disable" down-to 0
-
-test:
-	@echo "→ Ejecutando tests…"
-	@go test -v ./...
+	@./migrate down-to "postgres://postgres:postgres@localhost:5432/app_salud?sslmode=disable" 0
