@@ -98,7 +98,7 @@ func (this *Controller) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := utils.CreateJWT(user.UserID, user.RolName)
+	token, err := utils.CreateJWT(user.UserID, user.RolName, user.Email)
 	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err.Error())
 		return
@@ -117,4 +117,17 @@ func (this *Controller) Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func (this *Controller) Validate(w http.ResponseWriter, r *http.Request) {
+	claims, ok := middleware.FromContext(r.Context())
+	if !ok {
+		utils.WriteError(w, http.StatusUnauthorized, "No hay claims en contexto")
+		return
+	}
+
+	id := int(claims["user_id"].(float64))
+	roleName := claims["role_name"].(string)
+
+	utils.WriteJSON(w, http.StatusOK, map[string]any{
+		"id":       id,
+		"role_ame": roleName,
+	})
 }
