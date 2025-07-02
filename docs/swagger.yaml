@@ -377,7 +377,6 @@ definitions:
     - dose
     - vaccine_type
     type: object
-host: localhost:8080
 info:
   contact: {}
   description: API REST para gestion de salud

@@ -1,7 +1,6 @@
 // @title App Salud API
 // @version 1.0
 // @description API REST para gestion de salud
-// @host https://app-salud-back.onrender.com
 // @BasePath /api
 package api
 
