@@ -10,6 +10,7 @@ import (
 	"github.com/ProtoSG/app-salud-back/internal/features/prescription"
 	"github.com/ProtoSG/app-salud-back/internal/features/treatment"
 	"github.com/ProtoSG/app-salud-back/internal/features/user"
+	"github.com/ProtoSG/app-salud-back/internal/features/vaccine"
 	"github.com/ProtoSG/app-salud-back/internal/services"
 	"github.com/gorilla/mux"
 )
@@ -24,4 +25,5 @@ func NewRouterContainer(r *mux.Router, svc *services.ServiceContainer) {
 	treatment.NewRouter(r, svc.Treatment)
 	labresult.NewRouter(r, svc.LabResult)
 	medicalhistory.NewRouter(r, svc.MedicalHistory)
+	vaccine.NewRouter(r, svc.Vaccine)
 }
