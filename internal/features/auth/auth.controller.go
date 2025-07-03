@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/ProtoSG/app-salud-back/internal/features/user"
 	"github.com/ProtoSG/app-salud-back/internal/middleware"
@@ -108,6 +109,9 @@ func (this *Controller) Login(w http.ResponseWriter, r *http.Request) {
 		Name:     "token",
 		Value:    token,
 		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteNoneMode,
+		Expires:  time.Now().Add(24 * time.Hour),
 	})
 
 	utils.WriteJSON(w, http.StatusOK, utils.AuthResponse{
