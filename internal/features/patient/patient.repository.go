@@ -122,43 +122,30 @@ func (this *postgreRepo) Read(
 		}
 	}
 
-	if filters.Disease != "" {
-		whereParts = append(whereParts,
-			fmt.Sprintf("diseases @> ARRAY[$%d]::varchar[]", argPos),
-		)
-		args = append(args, filters.Disease)
-		argPos++
-	}
-
 	whereSQL := strings.Join(whereParts, " AND ")
 	args = append(args, limit, offset)
 	limPos := argPos
 	offPos := argPos + 1
 
 	q := fmt.Sprintf(`
-		WITH patient_info AS (
+			WITH patient_info AS (
+				SELECT
+					p.patient_id,
+					p.first_name || ' ' || p.last_name AS full_name,
+					p.gender,
+					EXTRACT(YEAR FROM AGE(CURRENT_DATE, p.birth_date))::INT AS age
+				FROM patient p
+				WHERE NOT p.is_deleted
+			)
 			SELECT
-				p.patient_id,
-				p.first_name || ' ' || p.last_name AS full_name,
-				p.gender,
-				EXTRACT(YEAR FROM AGE(CURRENT_DATE, p.birth_date))::INT AS age,
-				array_agg(d.description) AS diseases
-			FROM patient p
-			JOIN diagnosis d
-				ON d.patient_id = p.patient_id
-			WHERE NOT p.is_deleted
-			GROUP BY
-				p.patient_id, p.first_name, p.last_name, p.gender, p.birth_date
-		)
-		SELECT
-			patient_id,
-			full_name,
-			gender,
-			age
-		FROM patient_info
-		WHERE %s
-		LIMIT $%d
-		OFFSET $%d;
+				patient_id,
+				full_name,
+				gender,
+				age
+			FROM patient_info
+			WHERE %s
+			LIMIT $%d
+			OFFSET $%d;
 		`, whereSQL, limPos, offPos)
 
 	rows, err := this.db.Query(q, args...)

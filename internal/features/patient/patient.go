@@ -24,7 +24,6 @@ type PatientBasicData struct {
 type PatientFilters struct {
 	Gender   string
 	RangeAge [2]int
-	Disease  string
 }
 
 type PatientInfo struct {

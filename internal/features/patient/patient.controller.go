@@ -70,7 +70,6 @@ func (this *Controller) Create(w http.ResponseWriter, r *http.Request) {
 // @Param       page     query     int              false  "Número de página"        default(1)
 // @Param       limit    query     int              false  "Resultados por página"   default(9)
 // @Param       gender   query     string           false  "Filtrar por género"
-// @Param       disease  query     string           false  "Filtrar por enfermedad"
 // @Param       minAge   query     int              false  "Edad mínima"             default(0)
 // @Param       maxAge   query     int              false  "Edad máxima"             default(0)
 // @Success     200      {array}   PatientBasicData                            "Lista de pacientes"
@@ -101,7 +100,6 @@ func (this *Controller) GetAll(w http.ResponseWriter, r *http.Request) {
 	}
 
 	gender := r.URL.Query().Get("gender")
-	disease := r.URL.Query().Get("disease")
 
 	minAge, ok := parseInt("minAge", 0, "Edad mínima inválida")
 	if !ok {
@@ -119,7 +117,6 @@ func (this *Controller) GetAll(w http.ResponseWriter, r *http.Request) {
 	filters := &PatientFilters{
 		Gender:   gender,
 		RangeAge: [2]int{minAge, maxAge},
-		Disease:  disease,
 	}
 
 	patients, err := this.service.Read(page, limit, *filters)
