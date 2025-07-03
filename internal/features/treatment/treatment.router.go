@@ -15,7 +15,7 @@ func NewRouter(r *mux.Router, svc *Service) {
 			http.HandlerFunc(controller.CreateTreatment),
 		),
 	).Methods("POST")
-	r.Handle("/treatment/patient{id}",
+	r.Handle("/treatment/patient/{id}",
 		middleware.Auth(
 			http.HandlerFunc(controller.GetTreatmentsByPatientID),
 		),
