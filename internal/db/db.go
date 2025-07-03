@@ -4,29 +4,29 @@ import (
 	"database/sql"
 	"log"
 
-	_ "github.com/lib/pq"
+	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
 type SQLiteStore struct {
-	addr string 
+	addr string
 }
 
 func NewDBConnection(addr string) *SQLiteStore {
 	return &SQLiteStore{
 		addr: addr,
 	}
-} 
-
-func (this *SQLiteStore) initDB() (*sql.DB, error) {
-	db, err := sql.Open("postgres", this.addr)
-	if err != nil {
-		return nil, err 
-	}
-
-	return db, nil 
 }
 
-func (this *SQLiteStore) SetupDB() *sql.DB{
+func (this *SQLiteStore) initDB() (*sql.DB, error) {
+	db, err := sql.Open("pgx", this.addr)
+	if err != nil {
+		return nil, err
+	}
+
+	return db, nil
+}
+
+func (this *SQLiteStore) SetupDB() *sql.DB {
 	db, err := this.initDB()
 	if err != nil {
 		log.Fatalf("Error al conectar con la base de datos: %v", err)

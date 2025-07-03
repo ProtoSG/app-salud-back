@@ -24,7 +24,7 @@ services:
     depends_on:
       - db 
     environment:
-      - DATABASE_URL=postgres://postgres:postgres@db:5432/app_salud?sslmode=disable
+      - DATABASE_URL=postgresql://app-salud-db_owner:npg_WMwSBNi1vlJ3@ep-red-band-a86arx7b-pooler.eastus2.azure.neon.tech/app-salud-db?sslmode=require&channel_binding=require&prefer_simple_protocol=true
       - PORT=8080
       - TOKEN_SECRET=secreto
       - ORIGIN_URL=http://localhost:5173
